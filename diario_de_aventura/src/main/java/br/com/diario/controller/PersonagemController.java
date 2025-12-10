@@ -1,7 +1,7 @@
-package br.com.diarioaventuras.controller;
+package br.com.diario.controller;
 
-import br.com.diarioaventuras.entity.Personagem;
-import br.com.diarioaventuras.service.PersonagemService;
+import br.com.diario.model.Personagem;
+import br.com.diario.service.PersonagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class PersonagemController {
         return "personagem/form";
     }
 
-    @PostMapping
+    @PostMapping("/novo")
     public String salvar(@Valid Personagem personagem) {
         service.salvar(personagem);
         return "redirect:/personagens";

@@ -1,10 +1,7 @@
-package br.com.diarioaventuras.repository;
+package br.com.diario.repository;
 
-import br.com.diarioaventuras.entity.Personagem;
+import br.com.diario.model.Personagem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PersonagemRepository extends JpaRepository<Personagem, Long> {
-}
-public class PersonagemRepository {
-
 }

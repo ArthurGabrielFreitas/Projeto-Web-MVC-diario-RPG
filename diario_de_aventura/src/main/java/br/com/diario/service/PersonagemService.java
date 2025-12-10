@@ -1,7 +1,7 @@
-package br.com.diarioaventuras.service;
+package br.com.diario.service;
 
-import br.com.diarioaventuras.entity.Personagem;
-import br.com.diarioaventuras.repository.PersonagemRepository;
+import br.com.diario.model.Personagem;
+import br.com.diario.repository.PersonagemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
