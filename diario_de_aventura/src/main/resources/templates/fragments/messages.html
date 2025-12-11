@@ -1,0 +1,9 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="messages">
+    <div th:if="${message}" class="alert alert-success mt-3 container">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger mt-3 container">
+        <span th:text="${error}"></span>
+    </div>
+</div>
