@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Formulário Poder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="container mt-4">
+<h2 th:text="${poder.id} != null ? 'Editar Poder' : 'Novo Poder'">Form</h2>
+
+<form th:action="@{/poderes}" th:object="${poder}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <input class="form-control" th:field="*{nome}" required/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Categoria</label>
+        <input class="form-control" th:field="*{categoria}" required/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" th:field="*{descricao}" rows="5"></textarea>
+    </div>
+
+    <button class="btn btn-success" type="submit">Salvar</button>
+    <a th:href="@{/poderes}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+</body>
+</html>
