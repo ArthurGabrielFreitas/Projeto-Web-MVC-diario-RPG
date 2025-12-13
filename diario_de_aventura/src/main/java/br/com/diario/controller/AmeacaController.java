@@ -4,6 +4,9 @@ import br.com.diario.model.Ameaca;
 import br.com.diario.service.AmeacaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,11 +33,9 @@ public class AmeacaController {
 
     @PostMapping
     public String salvar(@Valid @ModelAttribute("ameaca") Ameaca ameaca,
-                         BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "ameaca/form";
-        }
-        service.salvar(ameaca);
+            BindingResult result, @RequestParam(required = false) List<Long> poderes,
+            @RequestParam(required = false) List<Long> magias) {
+        service.salvar(ameaca, poderes, magias);
         return "redirect:/ameacas";
     }
 
@@ -51,4 +52,3 @@ public class AmeacaController {
         return "redirect:/ameacas";
     }
 }
-

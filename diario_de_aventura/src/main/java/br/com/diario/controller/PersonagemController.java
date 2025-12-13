@@ -4,6 +4,9 @@ import br.com.diario.model.Personagem;
 import br.com.diario.service.PersonagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +31,9 @@ public class PersonagemController {
     }
 
     @PostMapping("/novo")
-    public String salvar(@Valid Personagem personagem) {
-        service.salvar(personagem);
+    public String salvar(@Valid Personagem personagem, @RequestParam(required = false) List<Long> poderes,
+            @RequestParam(required = false) List<Long> magias) {
+        service.salvar(personagem, poderes, magias);
         return "redirect:/personagens";
     }
 
