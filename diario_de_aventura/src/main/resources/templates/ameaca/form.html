@@ -12,7 +12,7 @@
 
     <h2 th:text="${ameaca.id != null ? 'Editar ameaça' : 'Nova ameaça'}"></h2>
 
-    <form th:action="@{/ameacas/salvar}" th:object="${ameaca}" method="post" class="mt-3">
+    <form th:action="@{/ameacas}" th:object="${ameaca}" method="post">
 
         <input type="hidden" th:field="*{id}" />
 
@@ -43,8 +43,8 @@
 
 
         <div class="mb-3">
-            <label class="form-label">Nível</label>
-            <input type="number" th:field="*{nivel}" class="form-control" min="0">
+            <label class="form-label">ND</label>
+            <input type="number" th:field="*{nivelDificuldade}" class="form-control" min="0">
         </div>
 
         <div class="mb-3">
