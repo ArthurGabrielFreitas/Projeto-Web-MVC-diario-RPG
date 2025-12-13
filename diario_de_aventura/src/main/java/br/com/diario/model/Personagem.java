@@ -5,7 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Entity
@@ -28,8 +28,8 @@ public class Personagem {
     @NotBlank(message = "A classe é obrigatória.")
     private String classe;
 
-    @PositiveOrZero
-    private Integer nivel;
+    @Positive
+    private Integer nivel = 1;
 
     @NotBlank(message = "O jogador é obrigatório.")
     private String jogador;

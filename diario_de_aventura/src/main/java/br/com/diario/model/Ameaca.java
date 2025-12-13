@@ -5,7 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Entity
@@ -31,8 +31,8 @@ public class Ameaca {
     @Lob
     private String descricao;
 
-    @PositiveOrZero
-    private Integer nivelDificuldade = 0;
+    @Positive
+    private Integer nivelDificuldade = 1;
 
     @ManyToMany
     @JoinTable(
