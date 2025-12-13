@@ -27,4 +27,7 @@ public class Personagem {
 
     @PositiveOrZero
     private Integer nivel;
+
+    @NotBlank(message = "O jogador é obrigatório.")
+    private String jogador;
 }

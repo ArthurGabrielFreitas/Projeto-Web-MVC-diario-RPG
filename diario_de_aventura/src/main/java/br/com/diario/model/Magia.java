@@ -2,7 +2,7 @@ package br.com.diario.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Entity
@@ -25,8 +25,8 @@ public class Magia {
     @Lob
     private String descricao;
 
-    @PositiveOrZero
-    private Integer nivel = 0;
+    @Positive
+    private Integer circulo = 1;
 
     /**
      * Custo em pontos ou outras notas (string para flexibilidade)

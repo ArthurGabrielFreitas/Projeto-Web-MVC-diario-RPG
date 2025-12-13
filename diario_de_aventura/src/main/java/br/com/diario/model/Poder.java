@@ -2,6 +2,8 @@ package br.com.diario.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -18,11 +20,19 @@ public class Poder {
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
-    @NotBlank(message = "Categoria é obrigatória")
-    private String categoria;
+    @NotBlank(message = "Origem é obrigatório")
+    private String origem;
+
+    @PositiveOrZero
+    private Integer custo = 1;
+
+    private String acao;
 
     @Lob
+    @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
+
+    private String preRequisitos;
 
     /**
      * Observação: Poderes podem ter níveis, usos por dia, etc.
