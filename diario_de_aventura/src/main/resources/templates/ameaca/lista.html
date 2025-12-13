@@ -21,7 +21,7 @@
         <tr>
             <th>Nome</th>
             <th>Tipo</th>
-            <th>Nível</th>
+            <th>ND</th>
             <th>Ações</th>
         </tr>
         </thead>
@@ -30,7 +30,7 @@
         <tr th:each="a : ${ameacas}">
             <td th:text="${a.nome}">Nome</td>
             <td th:text="${a.tipo}">Tipo</td>
-            <td th:text="${a.nivel}">Nivel</td>
+            <td th:text="${a.nivelDificuldade}">ND</td>
 
             <td>
                 <a class="btn btn-secondary btn-sm" th:href="@{'/ameacas/editar/' + ${a.id}}">Editar</a>

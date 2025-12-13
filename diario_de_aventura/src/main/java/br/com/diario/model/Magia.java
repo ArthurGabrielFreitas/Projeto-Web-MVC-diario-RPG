@@ -32,8 +32,7 @@ public class Magia {
     @Positive
     private Integer circulo = 1;
 
-    @PositiveOrZero
-    private Integer custo = 1;
+    private String custo;
 
     @ManyToMany(mappedBy = "magias")
     @Builder.Default

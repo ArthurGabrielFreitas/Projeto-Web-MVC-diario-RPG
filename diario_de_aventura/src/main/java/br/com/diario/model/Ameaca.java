@@ -23,7 +23,7 @@ public class Ameaca {
     private String nome;
 
     /**
-     * Tipo: CREATURE (criatura) | HAZARD (perigo complexo) | OUTRO
+     * Tipo: CRIATURA | PERIGO_COMPLEXO
      */
     @NotBlank(message = "Tipo é obrigatório")
     private String tipo;
@@ -32,7 +32,7 @@ public class Ameaca {
     private String descricao;
 
     @PositiveOrZero
-    private Integer nivel = 0;
+    private Integer nivelDificuldade = 0;
 
     @ManyToMany
     @JoinTable(

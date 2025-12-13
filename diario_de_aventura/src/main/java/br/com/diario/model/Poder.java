@@ -26,8 +26,7 @@ public class Poder {
     @NotBlank(message = "Origem é obrigatório")
     private String origem;
 
-    @PositiveOrZero
-    private Integer custo = 1;
+    private String custo;
 
     private String acao;
 
