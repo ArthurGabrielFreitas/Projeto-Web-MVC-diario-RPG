@@ -31,6 +31,38 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Raça</label>
+            <select class="form-select" th:field="*{raca}">
+                <option value="" disabled>Selecione</option>
+                <option value="humano">Humano</option>
+                <option value="elfo">Elfo</option>
+                <option value="anao">Anão</option>
+                <option value="hynne">Hynne</option>
+                <option value="medusa">Medusa</option>
+                <option value="goblin">Goblin</option>
+                <option value="silfide">Sílfide</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Classe</label>
+            <select class="form-select" th:field="*{classe}">
+                <option value="" disabled>Selecione</option>
+                <option value="arcanista">Arcanista</option>
+                <option value="barbaro">Bárbaro</option>
+                <option value="bardo">Bardo</option>
+                <option value="cacador">Caçador</option>
+                <option value="clerigo">Clérigo</option>
+                <option value="druida">Druida</option>
+                <option value="guerreiro">Guerreiro</option>
+                <option value="inventor">Inventor</option>
+                <option value="ladino">Ladino</option>
+                <option value="nobre">Nobre</option>
+                <option value="paladino">Paladino</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Poderes</label>
             <select class="form-select"
                     th:field="*{poderes}"
