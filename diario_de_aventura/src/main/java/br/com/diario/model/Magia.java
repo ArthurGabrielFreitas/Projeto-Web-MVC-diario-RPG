@@ -1,8 +1,12 @@
 package br.com.diario.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -28,9 +32,16 @@ public class Magia {
     @Positive
     private Integer circulo = 1;
 
-    /**
-     * Custo em pontos ou outras notas (string para flexibilidade)
-     */
-    private String custo;
+    @PositiveOrZero
+    private Integer custo = 1;
+
+    @ManyToMany(mappedBy = "magias")
+    @Builder.Default
+    private Set<Personagem> personagens = new HashSet<>();
+
+    @ManyToMany(mappedBy = "magias")
+    @Builder.Default
+    private Set<Ameaca> ameacas = new HashSet<>();
+
 }
 

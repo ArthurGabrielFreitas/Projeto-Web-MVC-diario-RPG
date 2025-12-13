@@ -1,5 +1,8 @@
 package br.com.diario.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -30,4 +33,23 @@ public class Ameaca {
 
     @PositiveOrZero
     private Integer nivel = 0;
+
+    @ManyToMany
+    @JoinTable(
+        name = "ameaca_poder",
+        joinColumns = @JoinColumn(name = "ameaca_id"),
+        inverseJoinColumns = @JoinColumn(name = "poder_id")
+    )
+    @Builder.Default
+    private Set<Poder> poderes = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "ameaca_magia",
+        joinColumns = @JoinColumn(name = "ameaca_id"),
+        inverseJoinColumns = @JoinColumn(name = "magia_id")
+    )
+    @Builder.Default
+    private Set<Magia> magias = new HashSet<>();
+
 }

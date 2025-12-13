@@ -1,5 +1,8 @@
 package br.com.diario.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -34,8 +37,12 @@ public class Poder {
 
     private String preRequisitos;
 
-    /**
-     * Observação: Poderes podem ter níveis, usos por dia, etc.
-     * Campos adicionais podem ser adicionados conforme necessário.
-     */
+    @ManyToMany(mappedBy = "poderes")
+    @Builder.Default
+    private Set<Personagem> personagens = new HashSet<>();
+
+    @ManyToMany(mappedBy = "poderes")
+    @Builder.Default
+    private Set<Ameaca> ameacas = new HashSet<>();
+
 }
