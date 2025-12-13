@@ -1,28 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Poderes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-</head>
-<body class="container mt-4">
-<h2>Poderes</h2>
-<a class="btn btn-primary mb-3" th:href="@{/poderes/novo}">Novo Poder</a>
 
-<table class="table table-striped">
-    <thead>
-        <tr><th>Nome</th><th>Categoria</th><th>Ações</th></tr>
-    </thead>
-    <tbody>
+<head th:replace="~{fragments/head :: head('Poderes')}"></head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<main class="container app-container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Poderes</h2>
+        <a class="btn btn-primary" th:href="@{/poderes/novo}">Novo Poder</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Origem</th>
+            <th>Custo</th>
+            <th>Ação</th>
+            <th>Pré-requisitos</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
         <tr th:each="p : ${poderes}">
             <td th:text="${p.nome}">Nome</td>
-            <td th:text="${p.categoria}">Categoria</td>
+            <td th:text="${p.origem}">Origem</td>
+            <td th:text="${p.custo}">Custo</td>
+            <td th:text="${p.acao}">Ação</td>
+            <td th:text="${p.preRequisitos}">Pré-requisitos</td>
+
             <td>
-                <a th:href="@{'/poderes/editar/' + ${p.id}}" class="btn btn-sm btn-secondary">Editar</a>
-                <a th:href="@{'/poderes/deletar/' + ${p.id}}" class="btn btn-sm btn-danger">Excluir</a>
+                <a class="btn btn-secondary btn-sm" th:href="@{'/poderes/editar/' + ${p.id}}">Editar</a>
+                <a class="btn btn-danger btn-sm" th:href="@{'/poderes/deletar/' + ${p.id}}">Excluir</a>
             </td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+
+    </table>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
 </body>
 </html>

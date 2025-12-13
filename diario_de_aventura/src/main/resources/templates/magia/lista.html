@@ -1,29 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Magias</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-</head>
-<body class="container mt-4">
-<h2>Magias</h2>
-<a class="btn btn-primary mb-3" th:href="@{/magias/novo}">Nova Magia</a>
 
-<table class="table table-striped">
-    <thead>
-        <tr><th>Nome</th><th>Escola</th><th>Nível</th><th>Ações</th></tr>
-    </thead>
-    <tbody>
+<head th:replace="~{fragments/head :: head('Magias')}"></head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<main class="container app-container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Magias</h2>
+        <a class="btn btn-primary" th:href="@{/magias/novo}">Nova Magia</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Círculo</th>
+            <th>Escola</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
         <tr th:each="m : ${magias}">
             <td th:text="${m.nome}">Nome</td>
+            <td th:text="${m.circulo}">Círculo</td>
             <td th:text="${m.escola}">Escola</td>
-            <td th:text="${m.nivel}">Nível</td>
+
             <td>
-                <a th:href="@{'/magias/editar/' + ${m.id}}" class="btn btn-sm btn-secondary">Editar</a>
-                <a th:href="@{'/magias/deletar/' + ${m.id}}" class="btn btn-sm btn-danger">Excluir</a>
+                <a class="btn btn-secondary btn-sm" th:href="@{'/magias/editar/' + ${m.id}}">Editar</a>
+                <a class="btn btn-danger btn-sm" th:href="@{'/magias/deletar/' + ${m.id}}">Excluir</a>
             </td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+
+    </table>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
 </body>
 </html>
