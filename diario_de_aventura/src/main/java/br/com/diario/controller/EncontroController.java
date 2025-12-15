@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.diario.model.Encontro;
+import br.com.diario.service.AmeacaService;
 import br.com.diario.service.EncontroService;
+import br.com.diario.service.PersonagemService;
 import br.com.diario.service.SessaoService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,8 @@ public class EncontroController {
 
     private final EncontroService service;
     private final SessaoService sessaoService;
+    private final PersonagemService personagemService;
+    private final AmeacaService ameacaService;
 
     @GetMapping
     public String listar(Model model) {
@@ -31,8 +35,11 @@ public class EncontroController {
     public String novo(Model model) {
         model.addAttribute("encontro", new Encontro());
         model.addAttribute("sessoes", sessaoService.listar());
+        model.addAttribute("personagens", personagemService.listar());
+        model.addAttribute("ameacas", ameacaService.listar());
         return "encontro/form";
     }
+
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Encontro encontro) {

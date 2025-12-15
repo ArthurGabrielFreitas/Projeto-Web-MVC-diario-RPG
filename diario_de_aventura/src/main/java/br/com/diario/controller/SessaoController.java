@@ -2,14 +2,15 @@ package br.com.diario.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.diario.model.Sessao;
 import br.com.diario.service.SessaoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -17,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SessaoController {
 
-    private final SessaoService service;
+    private final SessaoService sessaoService;
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("sessoes", service.listar());
+        model.addAttribute("sessoes", sessaoService.listar());
         return "sessao/lista";
     }
 
@@ -32,14 +33,17 @@ public class SessaoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute Sessao sessao) {
-        service.salvar(sessao);
+    public String salvar(@Valid Sessao sessao, BindingResult result) {
+        if (result.hasErrors()) {
+            return "sessao/form";
+        }
+        sessaoService.salvar(sessao);
         return "redirect:/sessoes";
     }
 
     @GetMapping("/deletar/{id}")
     public String deletar(@PathVariable Long id) {
-        service.deletar(id);
+        sessaoService.deletar(id);
         return "redirect:/sessoes";
     }
 }

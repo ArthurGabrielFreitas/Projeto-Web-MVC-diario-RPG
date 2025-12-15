@@ -23,6 +23,11 @@ public class EncontroService {
     }
 
     public Encontro salvar(Encontro encontro) {
+        if (encontro.getParticipacoes() != null) {
+            encontro.getParticipacoes().forEach(p -> {
+                p.setEncontro(encontro);
+            });
+        }
         return repository.save(encontro);
     }
 

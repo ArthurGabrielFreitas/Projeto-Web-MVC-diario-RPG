@@ -36,7 +36,7 @@ public class Encontro {
     private String descricao;
 
     @ManyToOne
-    @JoinColumn(name = "sessao_id")
+    @JoinColumn(name = "sessao_id", nullable = true)
     private Sessao sessao;
 
     @OneToMany(mappedBy = "encontro", cascade = CascadeType.ALL, orphanRemoval = true)
