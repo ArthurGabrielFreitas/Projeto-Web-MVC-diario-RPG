@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container mt-4">
+
+    <h2 th:text="${sessao.id == null ? 'Nova Sessão' : 'Editar Sessão'}"></h2>
+
+    <form th:action="@{/sessoes/salvar}" th:object="${sessao}" method="post">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="mb-3">
+            <label class="form-label">Título *</label>
+            <input class="form-control" th:field="*{titulo}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Data *</label>
+            <input type="date" class="form-control" th:field="*{data}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Duração (horas) *</label>
+            <input type="number"
+                   class="form-control"
+                   th:field="*{duracaoHoras}"
+                   min="1"
+                   required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Jogadores presentes</label>
+            <textarea class="form-control"
+                      th:field="*{jogadoresPresentes}"
+                      rows="3"
+                      placeholder="Ex: João, Maria, Carlos"></textarea>
+        </div>
+
+        <button class="btn btn-success">Salvar</button>
+        <a th:href="@{/sessoes}" class="btn btn-secondary">Cancelar</a>
+
+    </form>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
