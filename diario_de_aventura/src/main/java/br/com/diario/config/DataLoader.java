@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Configuration
@@ -17,14 +18,18 @@ public class DataLoader {
     private final PoderRepository poderRepository;
     private final MagiaRepository magiaRepository;
     private final AmeacaRepository ameacaRepository;
+    private final SessaoRepository sessaoRepository;
+    private final EncontroRepository encontroRepository;
 
     @Bean
     CommandLineRunner loadData() {
         return args -> {
 
-            /* =====================
-               PODERES
-               ===================== */
+            /*
+             * =====================
+             * PODERES
+             * =====================
+             */
             Poder ataquePoderoso = Poder.builder()
                     .nome("Ataque Poderoso")
                     .origem("Combate")
@@ -52,9 +57,11 @@ public class DataLoader {
 
             poderRepository.saveAll(Set.of(ataquePoderoso, esquiva, magiaInata));
 
-            /* =====================
-               MAGIAS
-               ===================== */
+            /*
+             * =====================
+             * MAGIAS
+             * =====================
+             */
             Magia bolaDeFogo = Magia.builder()
                     .nome("Bola de Fogo")
                     .escola("Evocação")
@@ -81,9 +88,11 @@ public class DataLoader {
 
             magiaRepository.saveAll(Set.of(bolaDeFogo, curarFerimentos, invisibilidade));
 
-            /* =====================
-               PERSONAGENS
-               ===================== */
+            /*
+             * =====================
+             * PERSONAGENS
+             * =====================
+             */
             Personagem guerreiro = Personagem.builder()
                     .nome("Thoran")
                     .raca("Humano")
@@ -105,9 +114,11 @@ public class DataLoader {
 
             personagemRepository.saveAll(Set.of(guerreiro, mago));
 
-            /* =====================
-               AMEAÇAS
-               ===================== */
+            /*
+             * =====================
+             * AMEAÇAS
+             * =====================
+             */
             Ameaca goblin = Ameaca.builder()
                     .nome("Goblin Selvagem")
                     .tipo("CRIATURA")
@@ -130,10 +141,70 @@ public class DataLoader {
                     .tipo("PERIGO_COMPLEXO")
                     .nivelDificuldade(3)
                     .descricao("Dispositivo mecânico mortal.")
-                    .build(); // sem poderes ou magias
+                    .build();
 
             ameacaRepository.saveAll(Set.of(goblin, necromante, armadilha));
+
+            /*
+             * =======================
+             * SESSÃO
+             * ========================
+             */
+            Sessao sessao1 = Sessao.builder()
+                    .titulo("Sessão 01 – A Cripta")
+                    .data(LocalDate.now())
+                    .duracaoHoras(4)
+                    .jogadoresPresentes("João, Maria")
+                    .build();
+
+            sessaoRepository.save(sessao1);
+
+            /*
+             * =======================
+             * ENCONTRO
+             * ========================
+             */
+            Encontro encontro = new Encontro();
+            encontro.setDescricao("Combate contra goblins na entrada da cripta.");
+            encontro.setDuracaoTurnos(6);
+            encontro.setSessao(sessao1);
+
+            /*
+             * =======================
+             * PARTICIPAÇÕES
+             * ========================
+             */
+
+            // Personagem - Guerreiro
+            ParticipacaoEncontro p1 = new ParticipacaoEncontro();
+            p1.setEncontro(encontro);
+            p1.setPersonagem(guerreiro);
+            p1.setMorte(false);
+            p1.setUltimoGolpe(true);
+            p1.setAnotacoes("Derrubou o líder goblin.");
+
+            // Personagem - Mago
+            ParticipacaoEncontro p2 = new ParticipacaoEncontro();
+            p2.setEncontro(encontro);
+            p2.setPersonagem(mago);
+            p2.setMorte(false);
+            p2.setUltimoGolpe(false);
+            p2.setAnotacoes("Usou bola de fogo para controlar o campo.");
+
+            // Ameaça - Goblin
+            ParticipacaoEncontro p3 = new ParticipacaoEncontro();
+            p3.setEncontro(encontro);
+            p3.setAmeaca(goblin);
+            p3.setMorte(true);
+            p3.setUltimoGolpe(false);
+            p3.setAnotacoes("Derrotado no início do combate.");
+
+            encontro.getParticipacoes().add(p1);
+            encontro.getParticipacoes().add(p2);
+            encontro.getParticipacoes().add(p3);
+
+            // SALVA SOMENTE O ENCONTRO
+            encontroRepository.save(encontro);
         };
     }
 }
-
