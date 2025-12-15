@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Sessões')}"></head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<main class="container app-container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Sessões</h2>
+        <a class="btn btn-primary" th:href="@{/sessoes/novo}">
+            Nova Sessão
+        </a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Título</th>
+            <th>Data</th>
+            <th>Duração (h)</th>
+            <th>Encontros</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="s : ${sessoes}">
+            <td th:text="${s.titulo}">Sessão 01</td>
+            <td th:text="${#temporals.format(s.data, 'dd/MM/yyyy')}">01/01/2025</td>
+            <td th:text="${s.duracaoHoras}">4</td>
+            <td th:text="${s.encontros.size()}">0</td>
+
+            <td>
+                <a class="btn btn-secondary btn-sm"
+                   th:href="@{'/sessoes/editar/' + ${s.id}}">
+                    Editar
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
