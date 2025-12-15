@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Novo Encontro</h2>
+
+    <form th:action="@{/encontros/salvar}" th:object="${encontro}" method="post">
+
+        <!-- Sessão -->
+        <select class="form-select" th:field="*{sessao}">
+            <option value="">Sem sessão</option>
+            <option th:each="s : ${sessoes}"
+                    th:value="${s}"
+                    th:text="${s.titulo}">
+            </option>
+        </select>
+
+
+        <!-- Duração -->
+        <div class="mb-3">
+            <label class="form-label">Duração (turnos) *</label>
+            <input type="number"
+                   class="form-control"
+                   th:field="*{duracaoTurnos}"
+                   min="1"
+                   required>
+        </div>
+
+        <!-- Descrição -->
+        <div class="mb-4">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control"
+                      th:field="*{descricao}"
+                      rows="3"></textarea>
+        </div>
+
+        <hr>
+
+        <h4 class="mb-3">Participantes do Encontro</h4>
+
+        <!-- PARTICIPAÇÕES -->
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Tipo</th>
+                <th>Participante</th>
+                <th>Morte</th>
+                <th>Último Golpe</th>
+                <th>Anotações</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <!-- PERSONAGENS -->
+            <tr th:each="p, stat : ${personagens}">
+                <td>Personagem</td>
+
+                <td>
+                    <input type="hidden"
+                           th:name="participacoes[__${stat.index}__].personagem"
+                           th:value="${p}"/>
+                    <span th:text="${p.nome}"></span>
+                </td>
+
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           th:name="participacoes[__${stat.index}__].morte">
+                </td>
+
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           th:name="participacoes[__${stat.index}__].ultimoGolpe">
+                </td>
+
+                <td>
+                    <input type="text"
+                           class="form-control"
+                           th:name="participacoes[__${stat.index}__].anotacoes">
+                </td>
+            </tr>
+
+            <!-- AMEAÇAS -->
+            <tr th:each="a, statA : ${ameacas}">
+                <td>Ameaça</td>
+
+                <td>
+                    <input type="hidden"
+                           th:name="participacoes[__${statA.index + personagens.size()}__].ameaca"
+                           th:value="${a}"/>
+                    <span th:text="${a.nome}"></span>
+                </td>
+
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           th:name="participacoes[__${statA.index + personagens.size()}__].morte">
+                </td>
+
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           th:name="participacoes[__${statA.index + personagens.size()}__].ultimoGolpe">
+                </td>
+
+                <td>
+                    <input type="text"
+                           class="form-control"
+                           th:name="participacoes[__${statA.index + personagens.size()}__].anotacoes">
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success">
+                Salvar Encontro
+            </button>
+            <a th:href="@{/encontros}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
