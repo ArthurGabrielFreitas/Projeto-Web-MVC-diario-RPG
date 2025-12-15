@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Encontros')}"></head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<main class="container app-container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Encontros</h2>
+        <a class="btn btn-primary" th:href="@{/encontros/novo}">
+            Novo Encontro
+        </a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Sessão</th>
+            <th>Duração (turnos)</th>
+            <th>Personagens</th>
+            <th>Ameaças</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="e : ${encontros}">
+            <td>
+                <span th:if="${e.sessao != null}"
+                      th:text="${e.sessao.titulo}">
+                    Sessão X
+                </span>
+                <span th:if="${e.sessao == null}"
+                      class="text-muted fst-italic">
+                    Sem sessão
+                </span>
+            </td>
+
+            <td th:text="${e.duracaoTurnos}">5</td>
+
+            <td th:text="${e.participacoes.size()}">0</td>
+
+            <td th:text="${e.ameacas.size()}">0</td>
+
+            <td>
+                <a class="btn btn-secondary btn-sm"
+                   th:href="@{'/encontros/editar/' + ${e.id}}">
+                    Editar
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
