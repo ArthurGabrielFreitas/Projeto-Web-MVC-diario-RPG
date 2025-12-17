@@ -312,6 +312,122 @@ public class DataLoader {
             encontro3.getParticipacoes().add(e3p2);
 
             encontroRepository.save(encontro3);
+
+            /*
+             * =====================
+             * ENTRADAS ADICIONAIS PARA TESTE (RAÇAS/CLASSES/ULTIMO GOLPE)
+             * =====================
+             */
+
+            Personagem extra1 = Personagem.builder()
+                    .nome("Rurik")
+                    .raca("Humano")
+                    .classe("Guerreiro")
+                    .nivel(2)
+                    .jogador("Lucas")
+                    .poderes(Set.of(ataquePoderoso))
+                    .build();
+
+            Personagem extra2 = Personagem.builder()
+                    .nome("Sylra")
+                    .raca("Elfo")
+                    .classe("Ladino")
+                    .nivel(3)
+                    .jogador("Mariana")
+                    .poderes(Set.of(esquiva))
+                    .build();
+
+            Personagem extra3 = Personagem.builder()
+                    .nome("Thalia")
+                    .raca("Humano")
+                    .classe("Clérigo")
+                    .nivel(4)
+                    .jogador("Pedro")
+                    .magias(Set.of(curarFerimentos))
+                    .build();
+
+            Personagem extra4 = Personagem.builder()
+                    .nome("Grom")
+                    .raca("Orc")
+                    .classe("Bárbaro")
+                    .nivel(5)
+                    .jogador("Ana")
+                    .poderes(Set.of(ataquePoderoso))
+                    .build();
+
+            personagemRepository.saveAll(Set.of(extra1, extra2, extra3, extra4));
+
+            // Encontro extra 4
+            Encontro encontro4 = new Encontro();
+            encontro4.setDescricao("Confronto noturno na ponte");
+            encontro4.setDuracaoTurnos(5);
+            encontro4.setSessao(sessao2);
+
+            ParticipacaoEncontro e4p1 = new ParticipacaoEncontro();
+            e4p1.setEncontro(encontro4);
+            e4p1.setPersonagem(extra1);
+            e4p1.setMorte(false);
+            e4p1.setUltimoGolpe(true);
+            e4p1.setAnotacoes("Desferiu o golpe final sobre o saqueador.");
+
+            ParticipacaoEncontro e4p2 = new ParticipacaoEncontro();
+            e4p2.setEncontro(encontro4);
+            e4p2.setAmeaca(orc);
+            e4p2.setMorte(true);
+            e4p2.setUltimoGolpe(false);
+            e4p2.setAnotacoes("Orc caiu na ponte.");
+
+            encontro4.getParticipacoes().add(e4p1);
+            encontro4.getParticipacoes().add(e4p2);
+            encontroRepository.save(encontro4);
+
+            // Encontro extra 5
+            Encontro encontro5 = new Encontro();
+            encontro5.setDescricao("Emboscada na caverna pequena");
+            encontro5.setDuracaoTurnos(3);
+            encontro5.setSessao(sessao2);
+
+            ParticipacaoEncontro e5p1 = new ParticipacaoEncontro();
+            e5p1.setEncontro(encontro5);
+            e5p1.setPersonagem(extra2);
+            e5p1.setMorte(false);
+            e5p1.setUltimoGolpe(true);
+            e5p1.setAnotacoes("Ataque surpresa e último golpe marcado.");
+
+            ParticipacaoEncontro e5p2 = new ParticipacaoEncontro();
+            e5p2.setEncontro(encontro5);
+            e5p2.setAmeaca(goblin);
+            e5p2.setMorte(true);
+            e5p2.setUltimoGolpe(false);
+            e5p2.setAnotacoes("Goblins derrotados.");
+
+            encontro5.getParticipacoes().add(e5p1);
+            encontro5.getParticipacoes().add(e5p2);
+            encontroRepository.save(encontro5);
+
+            // Encontro extra 6
+            Encontro encontro6 = new Encontro();
+            encontro6.setDescricao("Retaliação na aldeia");
+            encontro6.setDuracaoTurnos(6);
+            encontro6.setSessao(sessao1);
+
+            ParticipacaoEncontro e6p1 = new ParticipacaoEncontro();
+            e6p1.setEncontro(encontro6);
+            e6p1.setPersonagem(extra3);
+            e6p1.setMorte(false);
+            e6p1.setUltimoGolpe(true);
+            e6p1.setAnotacoes("Usou bênção e recebeu último golpe.");
+
+            ParticipacaoEncontro e6p2 = new ParticipacaoEncontro();
+            e6p2.setEncontro(encontro6);
+            e6p2.setAmeaca(necromante);
+            e6p2.setMorte(true);
+            e6p2.setUltimoGolpe(false);
+            e6p2.setAnotacoes("Necromante derrotado após expulsão.");
+
+            encontro6.getParticipacoes().add(e6p1);
+            encontro6.getParticipacoes().add(e6p2);
+            encontroRepository.save(encontro6);
         };
     }
 }
