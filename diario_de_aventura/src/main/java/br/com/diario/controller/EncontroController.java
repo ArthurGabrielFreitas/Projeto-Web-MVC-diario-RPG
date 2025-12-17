@@ -40,6 +40,66 @@ public class EncontroController {
         return "encontro/form";
     }
 
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        Encontro encontro = service.buscarPorId(id);
+
+        // carregar listas de apoio
+        var personagens = personagemService.listar();
+        var ameacas = ameacaService.listar();
+
+        // mapear participações existentes por personagem/ameaca id
+        var mapPorPersonagem = encontro.getParticipacoes().stream()
+                .filter(p -> p.getPersonagem() != null && p.getPersonagem().getId() != null)
+                .collect(java.util.stream.Collectors.toMap(p -> p.getPersonagem().getId(), p -> p));
+
+        var mapPorAmeaca = encontro.getParticipacoes().stream()
+                .filter(p -> p.getAmeaca() != null && p.getAmeaca().getId() != null)
+                .collect(java.util.stream.Collectors.toMap(p -> p.getAmeaca().getId(), p -> p));
+
+        // construir lista ordenada: primeiro personagens, depois ameacas
+        var participacoesOrdenadas = new java.util.ArrayList<br.com.diario.model.ParticipacaoEncontro>();
+
+        for (var pers : personagens) {
+            if (mapPorPersonagem.containsKey(pers.getId())) {
+                var part = mapPorPersonagem.get(pers.getId());
+                part.setEncontro(encontro);
+                part.setParticipa(true);
+                participacoesOrdenadas.add(part);
+            } else {
+                var part = new br.com.diario.model.ParticipacaoEncontro();
+                part.setPersonagem(pers);
+                part.setParticipa(false);
+                part.setEncontro(encontro);
+                participacoesOrdenadas.add(part);
+            }
+        }
+
+        for (var a : ameacas) {
+            if (mapPorAmeaca.containsKey(a.getId())) {
+                var part = mapPorAmeaca.get(a.getId());
+                part.setEncontro(encontro);
+                part.setParticipa(true);
+                participacoesOrdenadas.add(part);
+            } else {
+                var part = new br.com.diario.model.ParticipacaoEncontro();
+                part.setAmeaca(a);
+                part.setParticipa(false);
+                part.setEncontro(encontro);
+                participacoesOrdenadas.add(part);
+            }
+        }
+
+        encontro.setParticipacoes(participacoesOrdenadas);
+
+        model.addAttribute("encontro", encontro);
+        model.addAttribute("sessoes", sessaoService.listar());
+        model.addAttribute("personagens", personagens);
+        model.addAttribute("ameacas", ameacas);
+
+        return "encontro/form";
+    }
+
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Encontro encontro) {

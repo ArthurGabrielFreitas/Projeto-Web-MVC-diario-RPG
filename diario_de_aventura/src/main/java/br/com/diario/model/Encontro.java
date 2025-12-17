@@ -1,7 +1,9 @@
 package br.com.diario.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -40,5 +42,13 @@ public class Encontro {
     private Sessao sessao;
 
     @OneToMany(mappedBy = "encontro", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ParticipacaoEncontro> participacoes = new HashSet<>();
+    private List<ParticipacaoEncontro> participacoes = new ArrayList<>();
+
+    // Retorna o conjunto de ameaças presentes nas participações deste encontro
+    public java.util.Set<Ameaca> getAmeacas() {
+        return participacoes.stream()
+                .map(ParticipacaoEncontro::getAmeaca)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
 }

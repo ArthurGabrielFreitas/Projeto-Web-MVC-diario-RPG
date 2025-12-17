@@ -41,6 +41,9 @@ public class ParticipacaoEncontro {
 
     private Boolean ultimoGolpe = false;
 
+    // Indica se esta participação deve ser considerada/salva no encontro
+    private Boolean participa = false;
+
     @Lob
     private String anotacoes;
 }
