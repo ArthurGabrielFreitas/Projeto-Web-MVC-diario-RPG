@@ -101,6 +101,15 @@ Certifique‑se de que a configuração corresponde ao `application.properties`.
 
 🔨 **Em Desenvolvimento**
 
+## 📝 Observações recentes (edição de Encontros)
+
+- Nota importante sobre a edição de `Encontro` via formulário Thymeleaf: o formulário atual usa binding indexado (ex.: `participacoes[0].participa`, `participacoes[1].personagem.id`). Isso funciona, mas é frágil — requer que a ordem e o índice das participações na view coincidam exatamente com a lista no objeto enviado ao servidor. Se a ordem mudar entre abrir e submeter o formulário, os dados podem não mapear corretamente.
+
+Recomendação: para tornar o fluxo robusto recomendamos uma refatoração para binding por id (enviar parâmetros nomeados por id ou um payload JSON) em vez de depender de índices. Posso implementar essa refatoração se desejar (opção de maior trabalho, mas mais segura).
+
+## 🔬 Dados de teste adicionados
+
+O carregador de dados (`DataLoader`) foi estendido localmente para incluir exemplos adicionais: uma sessão extra, novos encontros, mais personagens e mais ameaças — úteis para testar fluxos de edição, listagem e pesquisa.
 ---
 
 ## 📜 Licença
