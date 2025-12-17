@@ -50,7 +50,7 @@ body {
 }
 
 /* Títulos */
-h1, h2, h3, .titulo-principal {
+h1, h2, h3,  .titulo-principal {
   font-family: 'Cinzel', serif;
   color: var(--t20-gold);
   margin-bottom: 1.5rem;
@@ -248,4 +248,3 @@ footer.site-footer {
 @media (max-width: 576px) {
   body { padding-top: 72px; }
 }
-
