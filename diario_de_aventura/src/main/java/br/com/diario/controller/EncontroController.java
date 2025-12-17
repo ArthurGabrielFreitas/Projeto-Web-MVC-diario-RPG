@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.diario.model.Encontro;
@@ -49,60 +52,90 @@ public class EncontroController {
         var ameacas = ameacaService.listar();
 
         // mapear participações existentes por personagem/ameaca id
-        var mapPorPersonagem = encontro.getParticipacoes().stream()
-                .filter(p -> p.getPersonagem() != null && p.getPersonagem().getId() != null)
-                .collect(java.util.stream.Collectors.toMap(p -> p.getPersonagem().getId(), p -> p));
+    var mapPorPersonagem = encontro.getParticipacoes().stream()
+        .filter(p -> p.getPersonagem() != null && p.getPersonagem().getId() != null)
+        .collect(java.util.stream.Collectors.toMap(p -> p.getPersonagem().getId(), p -> p));
 
-        var mapPorAmeaca = encontro.getParticipacoes().stream()
-                .filter(p -> p.getAmeaca() != null && p.getAmeaca().getId() != null)
-                .collect(java.util.stream.Collectors.toMap(p -> p.getAmeaca().getId(), p -> p));
+    var mapPorAmeaca = encontro.getParticipacoes().stream()
+        .filter(p -> p.getAmeaca() != null && p.getAmeaca().getId() != null)
+        .collect(java.util.stream.Collectors.toMap(p -> p.getAmeaca().getId(), p -> p));
 
-        // construir lista ordenada: primeiro personagens, depois ameacas
-        var participacoesOrdenadas = new java.util.ArrayList<br.com.diario.model.ParticipacaoEncontro>();
+    // Marcar como 'participa' as participações existentes para que o template
+    // exiba os checkboxes pré-marcados (edição). Não persistimos isso aqui.
+    mapPorPersonagem.values().forEach(part -> part.setParticipa(true));
+    mapPorAmeaca.values().forEach(part -> part.setParticipa(true));
 
-        for (var pers : personagens) {
-            if (mapPorPersonagem.containsKey(pers.getId())) {
-                var part = mapPorPersonagem.get(pers.getId());
-                part.setEncontro(encontro);
-                part.setParticipa(true);
-                participacoesOrdenadas.add(part);
-            } else {
-                var part = new br.com.diario.model.ParticipacaoEncontro();
-                part.setPersonagem(pers);
-                part.setParticipa(false);
-                part.setEncontro(encontro);
-                participacoesOrdenadas.add(part);
-            }
-        }
-
-        for (var a : ameacas) {
-            if (mapPorAmeaca.containsKey(a.getId())) {
-                var part = mapPorAmeaca.get(a.getId());
-                part.setEncontro(encontro);
-                part.setParticipa(true);
-                participacoesOrdenadas.add(part);
-            } else {
-                var part = new br.com.diario.model.ParticipacaoEncontro();
-                part.setAmeaca(a);
-                part.setParticipa(false);
-                part.setEncontro(encontro);
-                participacoesOrdenadas.add(part);
-            }
-        }
-
-        encontro.setParticipacoes(participacoesOrdenadas);
-
+        // For id-based binding, fornecemos apenas os mapas para a view utilizar
         model.addAttribute("encontro", encontro);
         model.addAttribute("sessoes", sessaoService.listar());
         model.addAttribute("personagens", personagens);
         model.addAttribute("ameacas", ameacas);
+        model.addAttribute("mapParticipacaoPorPersonagem", mapPorPersonagem);
+        model.addAttribute("mapParticipacaoPorAmeaca", mapPorAmeaca);
 
         return "encontro/form";
     }
 
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute Encontro encontro) {
+    public String salvar(@ModelAttribute Encontro encontro,
+                         @RequestParam(required = false, name = "personagensSelecionados") java.util.List<Long> personagensSelecionados,
+                         @RequestParam(required = false, name = "ameacasSelecionadas") java.util.List<Long> ameacasSelecionadas,
+                         HttpServletRequest request) {
+
+        var participacoes = new java.util.ArrayList<br.com.diario.model.ParticipacaoEncontro>();
+
+        // Construir participações de personagens a partir dos ids enviados
+        if (personagensSelecionados != null) {
+            for (Long pid : personagensSelecionados) {
+                var part = new br.com.diario.model.ParticipacaoEncontro();
+                // se houver um id de participacao existente, mantenha-o para atualização
+                String existing = request.getParameter("participacaoId_personagem_" + pid);
+                if (existing != null && !existing.isBlank()) {
+                    try {
+                        part.setId(Long.valueOf(existing));
+                    } catch (NumberFormatException e) {
+                        // ignore, será tratado como nova participação
+                    }
+                }
+                var pers = new br.com.diario.model.Personagem();
+                pers.setId(pid);
+                part.setPersonagem(pers);
+                part.setParticipa(true);
+                part.setMorte(request.getParameter("morte_personagem_" + pid) != null);
+                part.setUltimoGolpe(request.getParameter("ultimoGolpe_personagem_" + pid) != null);
+                part.setAnotacoes(request.getParameter("anotacoes_personagem_" + pid));
+                part.setEncontro(encontro);
+                participacoes.add(part);
+            }
+        }
+
+        // Construir participações de ameaças a partir dos ids enviados
+        if (ameacasSelecionadas != null) {
+            for (Long aid : ameacasSelecionadas) {
+                var part = new br.com.diario.model.ParticipacaoEncontro();
+                String existing = request.getParameter("participacaoId_ameaca_" + aid);
+                if (existing != null && !existing.isBlank()) {
+                    try {
+                        part.setId(Long.valueOf(existing));
+                    } catch (NumberFormatException e) {
+                        // ignore
+                    }
+                }
+                var am = new br.com.diario.model.Ameaca();
+                am.setId(aid);
+                part.setAmeaca(am);
+                part.setParticipa(true);
+                part.setMorte(request.getParameter("morte_ameaca_" + aid) != null);
+                part.setUltimoGolpe(request.getParameter("ultimoGolpe_ameaca_" + aid) != null);
+                part.setAnotacoes(request.getParameter("anotacoes_ameaca_" + aid));
+                part.setEncontro(encontro);
+                participacoes.add(part);
+            }
+        }
+
+        encontro.setParticipacoes(participacoes);
+
         service.salvar(encontro);
         return "redirect:/encontros";
     }

@@ -51,4 +51,12 @@ public class Encontro {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
+
+    // Retorna o conjunto de personagens presentes nas participações deste encontro
+    public java.util.Set<Personagem> getPersonagens() {
+        return participacoes.stream()
+                .map(ParticipacaoEncontro::getPersonagem)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
 }
