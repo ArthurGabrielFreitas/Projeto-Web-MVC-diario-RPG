@@ -136,11 +136,11 @@
                         // Mostrar nome do arquivo
                         const fileName = e.dataTransfer.files[0].name;
                         dropzone.innerHTML = `
-                            <i class="bi bi-file-earmark-check display-4 text-t20-gold mb-3"></i>
+                            <i class="bi bi-file-earmark-check display-4 text-warning mb-3"></i>
                             <h4>Arquivo pronto</h4>
                             <p class="text-truncate">${fileName}</p>
                             <div class="mt-3">
-                                <span class="badge bg-t20-red">Clique para alterar</span>
+                                <span class="badge bg-danger">Clique para alterar</span>
                             </div>
                         `;
                     }
@@ -151,11 +151,11 @@
                     if (this.files.length) {
                         const fileName = this.files[0].name;
                         dropzone.innerHTML = `
-                            <i class="bi bi-file-earmark-check display-4 text-t20-gold mb-3"></i>
+                            <i class="bi bi-file-earmark-check display-4 text-warning mb-3"></i>
                             <h4>Arquivo selecionado</h4>
                             <p class="text-truncate">${fileName}</p>
                             <div class="mt-3">
-                                <span class="badge bg-t20-red">Clique para alterar</span>
+                                <span class="badge bg-danger">Clique para alterar</span>
                             </div>
                         `;
                     }
