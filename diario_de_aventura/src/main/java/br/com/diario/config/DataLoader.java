@@ -205,6 +205,113 @@ public class DataLoader {
 
             // SALVA SOMENTE O ENCONTRO
             encontroRepository.save(encontro);
+
+            /*
+             * =====================
+             * MAIS DADOS DE TESTE
+             * =====================
+             */
+
+            // Novos personagens
+            Personagem ladino = Personagem.builder()
+                    .nome("Kara")
+                    .raca("Hynne")
+                    .classe("Ladino")
+                    .nivel(2)
+                    .jogador("Marcos")
+                    .poderes(Set.of(esquiva))
+                    .build();
+
+            Personagem clero = Personagem.builder()
+                    .nome("Bran")
+                    .raca("Anão")
+                    .classe("Clérigo")
+                    .nivel(3)
+                    .jogador("Paula")
+                    .poderes(Set.of(magiaInata))
+                    .magias(Set.of(curarFerimentos))
+                    .build();
+
+            personagemRepository.saveAll(Set.of(ladino, clero));
+
+            // Novas ameaças
+            Ameaca orc = Ameaca.builder()
+                    .nome("Orc Berserker")
+                    .tipo("CRIATURA")
+                    .nivelDificuldade(4)
+                    .descricao("Orc raivoso e forte.")
+                    .poderes(Set.of(ataquePoderoso))
+                    .build();
+
+            Ameaca espectro = Ameaca.builder()
+                    .nome("Espectro Errante")
+                    .tipo("ESPIRITO")
+                    .nivelDificuldade(6)
+                    .descricao("Entidade incorpórea que persegue os vivos.")
+                    .magias(Set.of(invisibilidade))
+                    .build();
+
+            ameacaRepository.saveAll(Set.of(orc, espectro));
+
+            // Nova sessão
+            Sessao sessao2 = Sessao.builder()
+                    .titulo("Sessão 02 – Ruínas Antigas")
+                    .data(LocalDate.now().plusDays(7))
+                    .duracaoHoras(3)
+                    .jogadoresPresentes("João, Maria, Marcos")
+                    .build();
+
+            sessaoRepository.save(sessao2);
+
+            // Encontro adicional 1 (na sessão 2)
+            Encontro encontro2 = new Encontro();
+            encontro2.setDescricao("Emboscada na trilha entre vilarejos.");
+            encontro2.setDuracaoTurnos(4);
+            encontro2.setSessao(sessao2);
+
+            ParticipacaoEncontro e2p1 = new ParticipacaoEncontro();
+            e2p1.setEncontro(encontro2);
+            e2p1.setPersonagem(ladino);
+            e2p1.setMorte(false);
+            e2p1.setUltimoGolpe(false);
+            e2p1.setAnotacoes("Se esquivou e atacou pelas sombras.");
+
+            ParticipacaoEncontro e2p2 = new ParticipacaoEncontro();
+            e2p2.setEncontro(encontro2);
+            e2p2.setAmeaca(orc);
+            e2p2.setMorte(true);
+            e2p2.setUltimoGolpe(true);
+            e2p2.setAnotacoes("Orc derrotado após resistência.");
+
+            encontro2.getParticipacoes().add(e2p1);
+            encontro2.getParticipacoes().add(e2p2);
+
+            encontroRepository.save(encontro2);
+
+            // Encontro adicional 2 (na sessão 1)
+            Encontro encontro3 = new Encontro();
+            encontro3.setDescricao("Investigação nas catacumbas - espectro observado.");
+            encontro3.setDuracaoTurnos(3);
+            encontro3.setSessao(sessao1);
+
+            ParticipacaoEncontro e3p1 = new ParticipacaoEncontro();
+            e3p1.setEncontro(encontro3);
+            e3p1.setPersonagem(clero);
+            e3p1.setMorte(false);
+            e3p1.setUltimoGolpe(false);
+            e3p1.setAnotacoes("Curou o grupo durante o encontro.");
+
+            ParticipacaoEncontro e3p2 = new ParticipacaoEncontro();
+            e3p2.setEncontro(encontro3);
+            e3p2.setAmeaca(espectro);
+            e3p2.setMorte(false);
+            e3p2.setUltimoGolpe(false);
+            e3p2.setAnotacoes("Espectro fugiu após luz sagrada.");
+
+            encontro3.getParticipacoes().add(e3p1);
+            encontro3.getParticipacoes().add(e3p2);
+
+            encontroRepository.save(encontro3);
         };
     }
 }
