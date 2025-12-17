@@ -40,6 +40,9 @@ public class EncontroController {
         model.addAttribute("sessoes", sessaoService.listar());
         model.addAttribute("personagens", personagemService.listar());
         model.addAttribute("ameacas", ameacaService.listar());
+        // fornecer mapas vazios para o template evitar indexação em null
+        model.addAttribute("mapParticipacaoPorPersonagem", new java.util.HashMap<Long, br.com.diario.model.ParticipacaoEncontro>());
+        model.addAttribute("mapParticipacaoPorAmeaca", new java.util.HashMap<Long, br.com.diario.model.ParticipacaoEncontro>());
         return "encontro/form";
     }
 
