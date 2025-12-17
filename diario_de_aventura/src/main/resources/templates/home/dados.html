@@ -6,268 +6,103 @@
 <div th:replace="~{fragments/messages :: messages}"></div>
 
     <style th:inline="text">
-        /* CSS específico para esta página */
-        .dropzone {
-            border: 3px dashed var(--t20-gold);
-            border-radius: 10px;
-            padding: 3rem;
-            text-align: center;
-            background-color: rgba(139, 30, 30, 0.1);
-            transition: all 0.3s;
-            cursor: pointer;
+        /* CSS simplificado para o relatório */
+        /* Forçar cor de destaque para os títulos de seção */
+        .report-card h6 {
+            color: #0d6efd !important; /* azul primário com bom contraste */
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+            margin-bottom: .75rem !important;
         }
-        
-        .dropzone:hover {
-            background-color: rgba(139, 30, 30, 0.2);
-            border-color: var(--t20-gold-light);
+
+        .report-card .list-group-item {
+            font-size: 1.15rem;
+            padding: 1rem 1.25rem;
         }
-        
-        .dropzone.dragover {
-            background-color: rgba(201, 162, 77, 0.2);
-            border-color: var(--t20-red);
+
+        .report-card .badge {
+            font-size: 1rem;
+            padding: .5rem .7rem;
+        }
+
+        /* Fazer o relatório ocupar mais espaço horizontal em telas grandes */
+        @media (min-width: 992px) {
+            .report-card { min-height: 320px; }
         }
     </style>
 </head>
 <body>
     <div th:fragment="conteudo">
         <section id="dados" class="container py-5">
-            <div class="row mb-4">
+            <div class="row mb-3">
                 <div class="col">
                     <h1 class="titulo-principal">
-                        <i class="bi bi-upload me-2"></i>Importação de Dados
+                        <i class="bi bi-file-earmark-text me-2"></i>Relatório — Personagens, Ameaças e Encontros
                     </h1>
-                    <p class="lead">Carregue arquivos CSV ou configure conexões com banco de dados para análise.</p>
+                    <p class="lead">Resumo analítico com contagens sobre personagens, ameaças e participações em encontros.</p>
                 </div>
             </div>
-            
-            <div class="row">
-                <!-- Upload de Arquivos -->
-                <div class="col-lg-6 mb-4">
-                    <div class="card card-t20 h-100">
-                        <div class="card-header card-header-t20">
-                            <h3 class="h5 mb-0">
-                                <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload de Arquivo CSV
-                            </h3>
-                        </div>
+
+            <!-- Report: layout em duas colunas maiores -->
+            <div class="row" th:if="${relatorio != null}">
+                <div class="col-lg-5 mb-3">
+                    <div class="card report-card">
                         <div class="card-body">
-                            <form th:action="@{/dados/upload}" method="post" enctype="multipart/form-data" id="uploadForm">
-                                <div class="dropzone mb-4" id="dropzone">
-                                    <i class="bi bi-cloud-arrow-up display-4 text-t20-gold mb-3"></i>
-                                    <h4>Arraste e solte seu arquivo CSV aqui</h4>
-                                    <p class="text-muted">ou clique para selecionar</p>
-                                    <input type="file" name="arquivo" id="arquivoInput" accept=".csv,.txt" class="d-none" required>
-                                    <div class="mt-3">
-                                        <span class="badge bg-t20-red">Máx. 10MB</span>
-                                        <span class="badge bg-t20-dark ms-2">CSV, TXT</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="separador" class="form-label form-label-t20">Separador de Colunas</label>
-                                    <select class="form-select form-control-t20" id="separador" name="separador">
-                                        <option value="," selected>Vírgula (,)</option>
-                                        <option value=";">Ponto e vírgula (;)</option>
-                                        <option value="\t">Tabulação</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="cabecalho" name="cabecalho" checked>
-                                    <label class="form-check-label" for="cabecalho">
-                                        Primeira linha contém cabeçalho
-                                    </label>
-                                </div>
-                                
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="reset" class="btn btn-t20-outline me-md-2">Limpar</button>
-                                    <button type="submit" class="btn btn-t20">
-                                        <i class="bi bi-upload me-1"></i> Enviar Arquivo
-                                    </button>
-                                </div>
-                            </form>
+                            <h6>Top Raças</h6>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="it : ${relatorio.topRacas}">
+                                    <span th:text="${it.label}">Humano</span>
+                                    <span class="badge bg-primary" th:text="${it.count}">0</span>
+                                </li>
+                            </ul>
+
+                            <h6>Top Classes</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="it : ${relatorio.topClasses}">
+                                    <span th:text="${it.label}">Guerreiro</span>
+                                    <span class="badge bg-primary" th:text="${it.count}">0</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Conexão com Banco de Dados -->
-                <div class="col-lg-6 mb-4">
-                    <div class="card card-t20 h-100">
-                        <div class="card-header card-header-t20">
-                            <h3 class="h5 mb-0">
-                                <i class="bi bi-database me-2"></i>Conexão com Banco de Dados
-                            </h3>
-                        </div>
+
+                <div class="col-lg-7 mb-3">
+                    <div class="card report-card">
                         <div class="card-body">
-                            <form th:action="@{/dados/conexao}" method="post" id="conexaoForm">
-                                <div class="mb-3">
-                                    <label for="tipoBanco" class="form-label form-label-t20">Tipo de Banco</label>
-                                    <select class="form-select form-control-t20" id="tipoBanco" name="tipoBanco" required>
-                                        <option value="" disabled selected>Selecione...</option>
-                                        <option value="mysql">MySQL</option>
-                                        <option value="postgresql">PostgreSQL</option>
-                                        <option value="sqlserver">SQL Server</option>
-                                        <option value="sqlite">SQLite</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="host" class="form-label form-label-t20">Host</label>
-                                    <input type="text" class="form-control form-control-t20" id="host" name="host" placeholder="localhost" required>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="usuario" class="form-label form-label-t20">Usuário</label>
-                                        <input type="text" class="form-control form-control-t20" id="usuario" name="usuario" required>
+                            <h6>Personagens mais ativos</h6>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="p : ${relatorio.topParticipantes}">
+                                    <span th:text="${p.nome}">Nome</span>
+                                    <span class="badge bg-primary" th:text="${p.count}">0</span>
+                                </li>
+                            </ul>
+
+                            <h6>Ameaças mais presentes</h6>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="a : ${relatorio.topAmeacasParticipacoes}">
+                                    <span th:text="${a.nome}">Ameaça</span>
+                                    <span class="badge bg-primary" th:text="${a.count}">0</span>
+                                </li>
+                            </ul>
+
+                            <h6>Últimos golpes (Top)</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="u : ${relatorio.topUltimoGolpe}">
+                                    <div>
+                                        <small class="text-muted" th:text="${u.tipo == 'personagem' ? 'Personagem' : 'Ameaça'}">Tipo</small>
+                                        <div th:text="${u.nome}">Nome</div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="senha" class="form-label form-label-t20">Senha</label>
-                                        <input type="password" class="form-control form-control-t20" id="senha" name="senha" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="nomeBanco" class="form-label form-label-t20">Nome do Banco</label>
-                                    <input type="text" class="form-control form-control-t20" id="nomeBanco" name="nomeBanco" required>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-t20">
-                                        <i class="bi bi-plug me-1"></i> Conectar
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dados Recentes -->
-            <div class="row mt-4">
-                <div class="col">
-                    <div class="card card-t20">
-                        <div class="card-header card-header-t20 d-flex justify-content-between align-items-center">
-                            <h3 class="h5 mb-0">
-                                <i class="bi bi-clock-history me-2"></i>Importações Recentes
-                            </h3>
-                            <span class="badge badge-t20" th:text="${totalImportacoes} + ' arquivos'">0 arquivos</span>
-                        </div>
-                        <div class="card-body">
-                            <div th:if="${importacoes != null and !importacoes.isEmpty()}">
-                                <div class="table-responsive">
-                                    <table class="table table-t20 table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Nome do Arquivo</th>
-                                                <th>Data</th>
-                                                <th>Tamanho</th>
-                                                <th>Status</th>
-                                                <th>Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr th:each="imp : ${importacoes}">
-                                                <td th:text="${imp.nome}">arquivo.csv</td>
-                                                <td th:text="${#temporals.format(imp.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
-                                                <td th:text="${imp.tamanho}">1.2 MB</td>
-                                                <td>
-                                                    <span th:class="${imp.status == 'SUCESSO'} ? 'badge bg-success' : 
-                                                                   ${imp.status == 'PROCESSANDO'} ? 'badge bg-warning' : 
-                                                                   'badge bg-danger'"
-                                                          th:text="${imp.status}">SUCESSO</span>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-t20-outline">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-t20-outline ms-1">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div th:if="${importacoes == null or importacoes.isEmpty()}" class="text-center py-4">
-                                <i class="bi bi-inbox display-4 text-t20-gold mb-3"></i>
-                                <p class="text-muted">Nenhum arquivo importado ainda.</p>
-                            </div>
+                                    <span class="badge bg-primary" th:text="${u.count}">0</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Relatório Analítico -->
-            <div class="row mt-4" th:if="${relatorio != null}">
-                <div class="col-12">
-                    <div class="card card-t20">
-                        <div class="card-header card-header-t20 d-flex justify-content-between align-items-center">
-                            <h3 class="h5 mb-0">
-                                <i class="bi bi-file-earmark-text me-2"></i>Relatório Analítico
-                            </h3>
-                            <span class="badge badge-t20">Gerado em tempo real</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <h6>Top Raças</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="it : ${relatorio.topRacas}">
-                                            <span th:text="${it.label}">Humano</span>
-                                            <span class="badge bg-t20-dark" th:text="${it.count}">0</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <h6>Top Classes</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="it : ${relatorio.topClasses}">
-                                            <span th:text="${it.label}">Guerreiro</span>
-                                            <span class="badge bg-t20-dark" th:text="${it.count}">0</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <h6>Personagens mais ativos</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="p : ${relatorio.topParticipantes}">
-                                            <span th:text="${p.nome}">Nome</span>
-                                            <span class="badge bg-t20-dark" th:text="${p.count}">0</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row mt-3">
-                                <div class="col-md-6 mb-3">
-                                    <h6>Ameaças mais presentes</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="a : ${relatorio.topAmeacasParticipacoes}">
-                                            <span th:text="${a.nome}">Ameaça</span>
-                                            <span class="badge bg-t20-dark" th:text="${a.count}">0</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <h6>Últimos golpes (Top)</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="u : ${relatorio.topUltimoGolpe}">
-                                            <div>
-                                                <small class="text-muted" th:text="${u.tipo == 'personagem' ? 'Personagem' : 'Ameaça'}">Tipo</small>
-                                                <div th:text="${u.nome}">Nome</div>
-                                            </div>
-                                            <span class="badge bg-t20-dark" th:text="${u.count}">0</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
-        </div>
+    </div>
 
         <footer th:replace="~{fragments/footer :: footer}"></footer>
 
