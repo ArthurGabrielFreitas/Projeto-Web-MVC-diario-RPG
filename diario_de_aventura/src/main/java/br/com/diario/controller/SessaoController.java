@@ -38,7 +38,7 @@ public class SessaoController {
         return "sessao/form";
     }
 
-    @PostMapping("/salvar")
+    @PostMapping
     public String salvar(@Valid Sessao sessao, BindingResult result) {
         if (result.hasErrors()) {
             return "sessao/form";

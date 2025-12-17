@@ -9,7 +9,7 @@
 
     <h2 th:text="${sessao.id == null ? 'Nova Sessão' : 'Editar Sessão'}"></h2>
 
-    <form th:action="@{/sessoes/salvar}" th:object="${sessao}" method="post">
+    <form th:action="@{/sessoes}" th:object="${sessao}" method="post">
 
         <input type="hidden" th:field="*{id}"/>
 
