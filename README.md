@@ -103,9 +103,35 @@ Certifique‑se de que a configuração corresponde ao `application.properties`.
 
 ## 📝 Observações recentes (edição de Encontros)
 
-- Nota importante sobre a edição de `Encontro` via formulário Thymeleaf: o formulário atual usa binding indexado (ex.: `participacoes[0].participa`, `participacoes[1].personagem.id`). Isso funciona, mas é frágil — requer que a ordem e o índice das participações na view coincidam exatamente com a lista no objeto enviado ao servidor. Se a ordem mudar entre abrir e submeter o formulário, os dados podem não mapear corretamente.
 
-Recomendação: para tornar o fluxo robusto recomendamos uma refatoração para binding por id (enviar parâmetros nomeados por id ou um payload JSON) em vez de depender de índices. Posso implementar essa refatoração se desejar (opção de maior trabalho, mas mais segura).
+## 🔧 Nota técnica — Binding id-based para `Encontro`
+
+Implementação recente (aplicada apenas aos artefatos relacionados a `Encontro`): o formulário de edição/salvamento de encontros foi refatorado do antigo "binding indexado" (ex.: `participacoes[0].personagem.id`) para um esquema id-based mais robusto.
+
+Como funciona agora:
+- A view envia duas listas de ids para participação: `personagensSelecionados` e `ameacasSelecionadas` (cada checkbox envia o id da entidade quando marcado).
+- Campos auxiliares por entidade são enviados com nomes específicos por id, por exemplo:
+	- `morte_personagem_{id}` — checkbox indicando morte do personagem
+	- `ultimoGolpe_personagem_{id}` — checkbox indicando se aplicou o último golpe
+	- `anotacoes_personagem_{id}` — campo de texto com anotações
+	- equivalentes com `ameaca` no nome para ameaças
+- Quando uma participação já existe no banco, o template envia também `participacaoId_personagem_{id}` ou `participacaoId_ameaca_{id}` para permitir atualização (em vez de criar um novo registro).
+
+No servidor (`EncontroController` → `EncontroService`) o fluxo é:
+1. Receber as listas de ids (`personagensSelecionados`, `ameacasSelecionadas`) e os campos por-entity via parâmetros do request.
+2. Construir a lista de `ParticipacaoEncontro` a partir desses ids (preservando ids existentes quando fornecidos).
+3. Resolver `Personagem` e `Ameaca` por id (via repositórios) e persistir o `Encontro` com as participações filtradas/atualizadas.
+
+Vantagens dessa abordagem:
+- Não depende da ordem/índices da lista no HTML, evitando problemas quando o DOM é reordenado ou quando o usuário adiciona/remova linhas client-side.
+- Permite atualização explícita de participações existentes (preservando seus ids) e criação de novas participações quando necessário.
+
+Como testar rapidamente:
+1. Abra a edição de um encontro: `GET /encontros/editar/{id}` — o formulário deverá vir com checkboxes pré-marcados para participações existentes.
+2. Marque/desmarque participantes (personagens/ameaças) e ajuste campos Morte/Último Golpe/Anotações.
+3. Submeta o formulário — o servidor irá reconstruir as participações por id e persistir as alterações.
+
+Observação: esta refatoração foi feita apenas nos arquivos relativos a `Encontro` (controller + template).
 
 ## 🔬 Dados de teste adicionados
 
