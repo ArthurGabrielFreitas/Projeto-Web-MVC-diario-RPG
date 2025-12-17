@@ -1,12 +1,19 @@
-# 🏰 Registro de Sessões de RPG – Tormenta20
+# 🏰 Registro de Sessões de RPG — Tormenta20
 
-Aplicação web em desenvolvimento utilizando **Spring Boot**, **Spring MVC**, **Thymeleaf**, **Bootstrap** e **H2 Database** para registrar e organizar informações de campanhas de RPG no sistema **Tormenta20**. A aplicação tem como objetivo armazenar personagens, ameaças, encontros e sessões, criando um histórico visual e persistido da campanha.
+Aplicação web em desenvolvimento usando **Spring Boot**, **Spring MVC**, **Thymeleaf**, **Bootstrap** e **H2 Database** para registrar e organizar informações de campanhas no sistema **Tormenta20**. Objetivo: armazenar personagens, ameaças, encontros e sessões, criando um histórico visual e persistido da campanha.
 
-> 🔥 O projeto segue como referência de estrutura, padrões e práticas o repositório: **Torresmo** (por @angoti).
+> 🔥 Referência de estrutura, padrões e práticas: [**Torresmo**](https://github.com/angoti/torresmo) (por @angoti).
+
+## 👥 Criado por
+
+- **Arthur Gabriel de Freitas Dantas Morais** — repositório: [@ArthurGabrielFreitas](https://github.com/ArthurGabrielFreitas)  
+- **Fernando Almeida** — repositório: [@Fernando-alme](https://github.com/Fernando-alme)
+
+Contribuições e melhorias são bem‑vindas — abra issues ou pull requests no repositório.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Tecnologias utilizadas
 
 | Tecnologia      | Uso                                          |
 | --------------- | -------------------------------------------- |
@@ -19,129 +26,183 @@ Aplicação web em desenvolvimento utilizando **Spring Boot**, **Spring MVC**, *
 
 ---
 
-## 🛠️ Funcionalidades Planejadas
+## 🧭 Introdução
 
-✔ Registro de personagens e ameaças
+Sistema simples para auxiliar mestres e jogadores a registrar o histórico das campanhas — personagens, ameaças, encontros e sessões — com interface web baseada em Thymeleaf. Foco atual: operação mestre/detalhe envolvendo Encontros e Sessões.
 
-✔ Registro de encontros e sessões
-
-✔ Histórico de cenas e eventos dentro da sessão
-
-🔧 Relacionamentos entre personagens e cenas (ex.: presença, ação, condição)
-
-🔧 Interface visual no estilo wiki modular
-
-🔧 Filtragens, buscas e consultas por campanha
+Responsabilidades principais:
+- Persistir entidades do jogo (Personagem, Ameaça, Magia, Poder, Encontro, Sessão)
+- Permitir CRUDs sobre as entidades principais
+- Suportar operação mestre/detalhe: Sessão (mestre) → Encontros (detalhes) → Participações
+- Gerar relatórios simples em HTML para exportação/impressão
 
 ---
 
-## 📁 Estrutura Geral do Projeto (prevista)
+## 🧩 Modelo de domínio (visão geral)
 
-```
-📦 src
- ┣ 📂 main
- ┃ ┣ 📂 java
- ┃ ┃ ┗ 📂 br.com.seuprojeto
- ┃ ┃ ┃ ┣ 📂 controller
- ┃ ┃ ┃ ┣ 📂 model
- ┃ ┃ ┃ ┣ 📂 repository
- ┃ ┃ ┃ ┣ 📂 service
- ┃ ┃ ┃ ┗ Application.java
- ┃ ┣ 📂 resources
- ┃ ┃ ┣ application.properties
- ┃ ┃ ┣ 📂 static
- ┃ ┃ ┣ 📂 templates
- ┃ ┃ ┃ ┗ index.html
- ┗ 📂 test
-```
+Entidades principais:
+- Personagem: dados do personagem (nome, atributos, status, …)
+- Ameaça: inimigos, monstros ou NPCs hostis com atributos de combate
+- Encontro: registro de um combate/encenação dentro de uma sessão
+- Sessão: sessão de jogo — data, descrição e lista de encontros
+- Participacao (ParticipacaoEncontro): ligação entre Encontro e Personagem/Ameaça com campos extras (morte, último golpe, anotações)
+- Magia / Poder: habilidades associadas a personagens/ameaças
+
+Relações importantes:
+- Uma Sessão possui vários Encontros (1:N)
+- Um Encontro possui várias Participações (N:1 para Personagem/Ameaça via Participacao)
+
+Diagrama simplificado (texto):
+
+Sessão 1 — N Encontro 1 — N Participação N — 1 Personagem  
+\-- N Participação N — 1 Ameaça
 
 ---
 
-## ▶️ Como Executar o Projeto
+## 🔁 CRUDs
 
-1. **Clone o repositório:**
+Padrão de recursos e rotas (exemplo):
 
+- Personagem
+    - Listar: GET /personagens
+    - Formulário de criação: GET /personagens/novo
+    - Criar: POST /personagens
+    - Editar: GET /personagens/editar/{id}
+    - Deletar: POST/GET /personagens/excluir/{id}
+
+Observação: os nomes exatos das rotas seguem a convenção dos controllers do projeto — ver `src/main/java/br/com/diario/controller`.
+
+---
+
+## 🔗 Operação mestre/detalhe
+
+Mestre: Sessão — contém metadados (data, título, observações) e referencia os encontros.  
+Detalhe: Encontro — cada encontro pertence a uma sessão e contém várias participações.
+
+Fluxo de edição/salvamento (alto nível):
+1. Formulário de criação/edição de Sessão permite adicionar/editar Encontros vinculados.
+2. Cada Encontro possui participações; a view envia apenas os ids selecionados para personagens/ameaças e campos auxiliares por id (ex.: `anotacoes_personagem_{id}`).
+3. No backend o controller reúne os ids enviados, resolve as entidades (via repositório), preserva ids de Participacao existentes quando informado e atualiza/cria registros conforme necessário.
+
+Nota técnica (binding id-based para Encontro):
+- O template envia listas de ids (ex.: `personagensSelecionados`, `ameacasSelecionadas`) e campos nomeados por id.
+- Essa abordagem evita problemas de indexação no HTML e facilita atualização seletiva de participações já existentes.
+
+Vantagens:
+- Robustez na atualização de coleções complexas
+- Independência da ordem dos elementos no DOM
+
+---
+
+## 📊 Relatórios
+
+Relatórios gerados em HTML (Thymeleaf) para exibição/impressão. Exemplos:
+- Relatório de Sessão — lista de encontros e resumo das participações
+- Relatório de Encontro — detalhes de um encontro específico, com ações e anotações
+
+---
+
+## 🖼️ Prints das telas (placeholders)
+
+Substitua os caminhos abaixo pelas imagens reais do projeto. Coloque as imagens e atualize os `src`.
+
+- Tela inicial 
+    ![Home](./diario_de_aventura/src/main/resources/static/img/prints/Página%20inicial.png)
+
+- Personagens — Lista  
+    ![Personagens - Lista](./diario_de_aventura/src/main/resources/static/img/prints/Personagens%20-%20lista.png)
+
+- Personagens — Formulário  
+    ![Personagem - Form](./diario_de_aventura/src/main/resources/static/img/prints/Personagens%20-%20formulário.png)
+
+- Ameaças — Lista  
+    ![Ameaças - Lista](./diario_de_aventura/src/main/resources/static/img/prints/Ameaças%20-%20lista.png)
+
+- Ameaças — Formulário  
+    ![Ameaças - Formulário](./diario_de_aventura/src/main/resources/static/img/prints/Ameaças%20-%20formulário.png)
+
+- Encontros — Lista  
+    ![Encontros - Lista](./diario_de_aventura/src/main/resources/static/img/prints/Encontros%20-%20lista.png)
+
+- Encontros — Formulário (participações)  
+    ![Encontro - Form](./diario_de_aventura/src/main/resources/static/img/prints/Encontros%20-%20formulário.png)
+
+- Sessões — Lista  
+    ![Sessões - Lista](./diario_de_aventura/src/main/resources/static/img/prints/Sessões%20-%20lista.png)
+
+- Sessões — Detalhes  
+    ![Sessão - Relatório](./diario_de_aventura/src/main/resources/static/img/prints/Sessões%20-%20formulário.png)
+
+- Relatório
+    ![Relatório](./diario_de_aventura/src/main/resources/static/img/prints/Relatório.png)
+
+Observação: crie a pasta `docs/screens/` (ou outro caminho) e atualize os `src`.
+
+---
+
+## ▶️ Instruções de execução
+
+Pré-requisitos:
+- Java 17+ (testado com JDK 17/19; prefira LTS)
+- Maven (opcional se usar o wrapper `./mvnw`)
+
+Passos rápidos:
+
+1. Clone o repositório
 ```bash
-git clone https://github.com/SEU-USUARIO/NOME-DO-PROJETO.git
+git clone https://github.com/ArthurGabrielFreitas/Projeto-Web-MVC-diario-RPG.git
+cd Projeto-Web-MVC-diario-RPG/diario_de_aventura
 ```
 
-2. **Acesse o diretório:**
-
-```bash
-cd NOME-DO-PROJETO
-```
-
-3. **Execute o projeto com Maven ou pela sua IDE:**
-
+2. Rodar via Maven wrapper:
 ```bash
 ./mvnw spring-boot:run
 ```
-
-4. **Abra no navegador:**
-
+Ou empacotar e executar o JAR:
+```bash
+./mvnw clean package
+java -jar target/diario_de_aventura-1.0.0.jar
 ```
+
+3. Acesse a aplicação:
 http://localhost:8080
-```
 
----
-
-## 🧪 Banco de Dados H2
-
-Após iniciar o projeto, acesse:
-
-```
+4. Console H2 (dev):
 http://localhost:8080/h2-console
-```
 
-Certifique‑se de que a configuração corresponde ao `application.properties`.
+Verifique `src/main/resources/application.properties` para ajustar conexões ou porta.
 
 ---
 
-## 📌 Status do Projeto
+## 🏗️ Arquitetura do sistema
 
-🔨 **Em Desenvolvimento**
+Camadas:
+- Controller (Web) — recebe requests HTTP, valida e delega para services  
+- Service — lógica de negócio e orquestração entre repositórios  
+- Repository (JPA) — persistência via Spring Data JPA  
+- Model / Entity — classes do domínio  
+- View — templates Thymeleaf em `src/main/resources/templates`  
+- Recursos estáticos — CSS/JS/Imagens em `src/main/resources/static`
 
-## 📝 Observações recentes (edição de Encontros)
+Padrões usados:
+- MVC (Model-View-Controller)
+- Repositório (Spring Data JPA)
+- Templates server-side (Thymeleaf)
 
+Possíveis evoluções:
+- Separar front-end em SPA (React/Vue) e expor API REST
+- Adicionar autenticação/autorização (Spring Security)
+- Migrar para banco relacional externo (PostgreSQL/MySQL)
 
-## 🔧 Nota técnica — Binding id-based para `Encontro`
+---
 
-Implementação recente (aplicada apenas aos artefatos relacionados a `Encontro`): o formulário de edição/salvamento de encontros foi refatorado do antigo "binding indexado" (ex.: `participacoes[0].personagem.id`) para um esquema id-based mais robusto.
+## 🔍 Observações técnicas e dicas
 
-Como funciona agora:
-- A view envia duas listas de ids para participação: `personagensSelecionados` e `ameacasSelecionadas` (cada checkbox envia o id da entidade quando marcado).
-- Campos auxiliares por entidade são enviados com nomes específicos por id, por exemplo:
-	- `morte_personagem_{id}` — checkbox indicando morte do personagem
-	- `ultimoGolpe_personagem_{id}` — checkbox indicando se aplicou o último golpe
-	- `anotacoes_personagem_{id}` — campo de texto com anotações
-	- equivalentes com `ameaca` no nome para ameaças
-- Quando uma participação já existe no banco, o template envia também `participacaoId_personagem_{id}` ou `participacaoId_ameaca_{id}` para permitir atualização (em vez de criar um novo registro).
+- Encontros usam binding id-based para tratar coleções de participações — ver `EncontroController` e templates em `templates/encontro/`.
+- Para testes rápidos, revise o `DataLoader` (ou equivalente) que popula dados de exemplo na inicialização.
 
-No servidor (`EncontroController` → `EncontroService`) o fluxo é:
-1. Receber as listas de ids (`personagensSelecionados`, `ameacasSelecionadas`) e os campos por-entity via parâmetros do request.
-2. Construir a lista de `ParticipacaoEncontro` a partir desses ids (preservando ids existentes quando fornecidos).
-3. Resolver `Personagem` e `Ameaca` por id (via repositórios) e persistir o `Encontro` com as participações filtradas/atualizadas.
-
-Vantagens dessa abordagem:
-- Não depende da ordem/índices da lista no HTML, evitando problemas quando o DOM é reordenado ou quando o usuário adiciona/remova linhas client-side.
-- Permite atualização explícita de participações existentes (preservando seus ids) e criação de novas participações quando necessário.
-
-Como testar rapidamente:
-1. Abra a edição de um encontro: `GET /encontros/editar/{id}` — o formulário deverá vir com checkboxes pré-marcados para participações existentes.
-2. Marque/desmarque participantes (personagens/ameaças) e ajuste campos Morte/Último Golpe/Anotações.
-3. Submeta o formulário — o servidor irá reconstruir as participações por id e persistir as alterações.
-
-Observação: esta refatoração foi feita apenas nos arquivos relativos a `Encontro` (controller + template).
-
-## 🔬 Dados de teste adicionados
-
-O carregador de dados (`DataLoader`) foi estendido localmente para incluir exemplos adicionais: uma sessão extra, novos encontros, mais personagens e mais ameaças — úteis para testar fluxos de edição, listagem e pesquisa.
 ---
 
 ## 📜 Licença
 
-Este projeto poderá ser distribuído sob uma licença livre (a definir).
-
----
-
-📣 Caso queira contribuir com ideias ou organização estrutural, sinta-se à vontade!
+Defina a licença desejada (MIT, Apache-2.0, etc.) se for compartilhar publicamente.
