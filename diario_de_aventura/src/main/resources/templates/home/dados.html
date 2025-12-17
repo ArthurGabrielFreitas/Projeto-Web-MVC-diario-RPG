@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(
+          titulo='Importação de Dados • Tormenta20',
+          descricao='Área de importação de dados CSV e configuração de fontes',
+          paginaAtiva='dados',
+          breadcrumb=${breadcrumb},
+          conteudo=~{::conteudo},
+          cssAdicional=~{::cssAdicional},
+          scriptsAdicionais=~{::scriptsAdicionais}
+      )">
+<head>
+    <style th:inline="text">
+        /* CSS específico para esta página */
+        .dropzone {
+            border: 3px dashed var(--t20-gold);
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            background-color: rgba(139, 30, 30, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .dropzone:hover {
+            background-color: rgba(139, 30, 30, 0.2);
+            border-color: var(--t20-gold-light);
+        }
+        
+        .dropzone.dragover {
+            background-color: rgba(201, 162, 77, 0.2);
+            border-color: var(--t20-red);
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="conteudo">
+        <section id="dados" class="container py-5">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 class="titulo-principal">
+                        <i class="bi bi-upload me-2"></i>Importação de Dados
+                    </h1>
+                    <p class="lead">Carregue arquivos CSV ou configure conexões com banco de dados para análise.</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Upload de Arquivos -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card card-t20 h-100">
+                        <div class="card-header card-header-t20">
+                            <h3 class="h5 mb-0">
+                                <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload de Arquivo CSV
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/dados/upload}" method="post" enctype="multipart/form-data" id="uploadForm">
+                                <div class="dropzone mb-4" id="dropzone">
+                                    <i class="bi bi-cloud-arrow-up display-4 text-t20-gold mb-3"></i>
+                                    <h4>Arraste e solte seu arquivo CSV aqui</h4>
+                                    <p class="text-muted">ou clique para selecionar</p>
+                                    <input type="file" name="arquivo" id="arquivoInput" accept=".csv,.txt" class="d-none" required>
+                                    <div class="mt-3">
+                                        <span class="badge bg-t20-red">Máx. 10MB</span>
+                                        <span class="badge bg-t20-dark ms-2">CSV, TXT</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="separador" class="form-label form-label-t20">Separador de Colunas</label>
+                                    <select class="form-select form-control-t20" id="separador" name="separador">
+                                        <option value="," selected>Vírgula (,)</option>
+                                        <option value=";">Ponto e vírgula (;)</option>
+                                        <option value="\t">Tabulação</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="cabecalho" name="cabecalho" checked>
+                                    <label class="form-check-label" for="cabecalho">
+                                        Primeira linha contém cabeçalho
+                                    </label>
+                                </div>
+                                
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="reset" class="btn btn-t20-outline me-md-2">Limpar</button>
+                                    <button type="submit" class="btn btn-t20">
+                                        <i class="bi bi-upload me-1"></i> Enviar Arquivo
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conexão com Banco de Dados -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card card-t20 h-100">
+                        <div class="card-header card-header-t20">
+                            <h3 class="h5 mb-0">
+                                <i class="bi bi-database me-2"></i>Conexão com Banco de Dados
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/dados/conexao}" method="post" id="conexaoForm">
+                                <div class="mb-3">
+                                    <label for="tipoBanco" class="form-label form-label-t20">Tipo de Banco</label>
+                                    <select class="form-select form-control-t20" id="tipoBanco" name="tipoBanco" required>
+                                        <option value="" disabled selected>Selecione...</option>
+                                        <option value="mysql">MySQL</option>
+                                        <option value="postgresql">PostgreSQL</option>
+                                        <option value="sqlserver">SQL Server</option>
+                                        <option value="sqlite">SQLite</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="host" class="form-label form-label-t20">Host</label>
+                                    <input type="text" class="form-control form-control-t20" id="host" name="host" placeholder="localhost" required>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="usuario" class="form-label form-label-t20">Usuário</label>
+                                        <input type="text" class="form-control form-control-t20" id="usuario" name="usuario" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="senha" class="form-label form-label-t20">Senha</label>
+                                        <input type="password" class="form-control form-control-t20" id="senha" name="senha" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="nomeBanco" class="form-label form-label-t20">Nome do Banco</label>
+                                    <input type="text" class="form-control form-control-t20" id="nomeBanco" name="nomeBanco" required>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-t20">
+                                        <i class="bi bi-plug me-1"></i> Conectar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dados Recentes -->
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card card-t20">
+                        <div class="card-header card-header-t20 d-flex justify-content-between align-items-center">
+                            <h3 class="h5 mb-0">
+                                <i class="bi bi-clock-history me-2"></i>Importações Recentes
+                            </h3>
+                            <span class="badge badge-t20" th:text="${totalImportacoes} + ' arquivos'">0 arquivos</span>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${importacoes != null and !importacoes.isEmpty()}">
+                                <div class="table-responsive">
+                                    <table class="table table-t20 table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome do Arquivo</th>
+                                                <th>Data</th>
+                                                <th>Tamanho</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="imp : ${importacoes}">
+                                                <td th:text="${imp.nome}">arquivo.csv</td>
+                                                <td th:text="${#temporals.format(imp.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+                                                <td th:text="${imp.tamanho}">1.2 MB</td>
+                                                <td>
+                                                    <span th:class="${imp.status == 'SUCESSO'} ? 'badge bg-success' : 
+                                                                   ${imp.status == 'PROCESSANDO'} ? 'badge bg-warning' : 
+                                                                   'badge bg-danger'"
+                                                          th:text="${imp.status}">SUCESSO</span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-t20-outline">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-t20-outline ms-1">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div th:if="${importacoes == null or importacoes.isEmpty()}" class="text-center py-4">
+                                <i class="bi bi-inbox display-4 text-t20-gold mb-3"></i>
+                                <p class="text-muted">Nenhum arquivo importado ainda.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div th:fragment="scriptsAdicionais">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropzone = document.getElementById('dropzone');
+                const fileInput = document.getElementById('arquivoInput');
+                
+                // Clique na dropzone
+                dropzone.addEventListener('click', () => fileInput.click());
+                
+                // Arrastar e soltar
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('dragover');
+                });
+                
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('dragover');
+                });
+                
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('dragover');
+                    
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        
+                        // Mostrar nome do arquivo
+                        const fileName = e.dataTransfer.files[0].name;
+                        dropzone.innerHTML = `
+                            <i class="bi bi-file-earmark-check display-4 text-t20-gold mb-3"></i>
+                            <h4>Arquivo pronto</h4>
+                            <p class="text-truncate">${fileName}</p>
+                            <div class="mt-3">
+                                <span class="badge bg-t20-red">Clique para alterar</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                // Alteração do input de arquivo
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length) {
+                        const fileName = this.files[0].name;
+                        dropzone.innerHTML = `
+                            <i class="bi bi-file-earmark-check display-4 text-t20-gold mb-3"></i>
+                            <h4>Arquivo selecionado</h4>
+                            <p class="text-truncate">${fileName}</p>
+                            <div class="mt-3">
+                                <span class="badge bg-t20-red">Clique para alterar</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                // Validação do formulário de conexão
+                const conexaoForm = document.getElementById('conexaoForm');
+                conexaoForm.addEventListener('submit', function(e) {
+                    const tipoBanco = document.getElementById('tipoBanco').value;
+                    if (!tipoBanco) {
+                        e.preventDefault();
+                        alert('Selecione o tipo de banco de dados');
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
+    </div>
+</body>
+</html>

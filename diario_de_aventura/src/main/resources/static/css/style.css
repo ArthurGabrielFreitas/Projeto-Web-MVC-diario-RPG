@@ -1,8 +1,231 @@
-/* style.css - ajustes visuais mínimos */
-body {
-  padding-top: 70px; /* espaço para navbar fixa */
+:root {
+  --t20-bg: #1a1a1a;
+  --t20-bg-dark: #111;
+  --t20-red: #8b1e1e;
+  --t20-red-hover: #a52828;
+  --t20-gold: #c9a24d;
+  --t20-gold-light: #e0c07c;
+  --t20-text: #e5e5e5;
+  --t20-text-muted: #aaaaaa;
 }
 
+body {
+  background-color: var(--t20-bg);
+  color: var(--t20-text);
+  font-family: 'Roboto', sans-serif;
+  padding-top: 76px; /* Altura da navbar fixa */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(90deg, var(--t20-bg-dark), var(--t20-red));
+  border-bottom: 2px solid var(--t20-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-brand {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--t20-gold) !important;
+  letter-spacing: 1px;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  color: var(--t20-text) !important;
+  transition: color 0.3s;
+  padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: var(--t20-gold) !important;
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--t20-gold) !important;
+  border-bottom: 2px solid var(--t20-gold);
+}
+
+/* Títulos */
+h1, h2, h3, .titulo-principal {
+  font-family: 'Cinzel', serif;
+  color: var(--t20-gold);
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  border-bottom: 2px solid var(--t20-red);
+  padding-bottom: 0.5rem;
+}
+
+/* Cards */
+.card-t20 {
+  background-color: var(--t20-bg-dark);
+  border: 1px solid var(--t20-gold);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-t20:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(201, 162, 77, 0.3);
+}
+
+.card-header-t20 {
+  background: linear-gradient(90deg, var(--t20-bg-dark), var(--t20-red));
+  border-bottom: 1px solid var(--t20-gold);
+  color: var(--t20-gold);
+  font-family: 'Cinzel', serif;
+  padding: 1rem 1.25rem;
+}
+
+/* Botões */
+.btn-t20 {
+  background-color: var(--t20-red);
+  border: 1px solid var(--t20-gold);
+  color: var(--t20-text);
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-t20:hover, .btn-t20:focus {
+  background-color: var(--t20-red-hover);
+  border-color: var(--t20-gold-light);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(201, 162, 77, 0.5);
+}
+
+.btn-t20-outline {
+  background-color: transparent;
+  border: 1px solid var(--t20-gold);
+  color: var(--t20-gold);
+}
+
+.btn-t20-outline:hover {
+  background-color: var(--t20-gold);
+  color: var(--t20-bg-dark);
+}
+
+/* Formulários */
+.form-control-t20 {
+  background-color: var(--t20-bg-dark);
+  border: 1px solid #444;
+  color: var(--t20-text);
+}
+
+.form-control-t20:focus {
+  background-color: var(--t20-bg-dark);
+  border-color: var(--t20-gold);
+  color: var(--t20-text);
+  box-shadow: 0 0 0 0.25rem rgba(201, 162, 77, 0.25);
+}
+
+.form-label-t20 {
+  color: var(--t20-gold);
+  font-weight: 500;
+}
+
+/* Tabelas */
+.table-t20 {
+  color: var(--t20-text);
+  border-color: #444;
+}
+
+.table-t20 thead th {
+  background-color: var(--t20-red);
+  color: var(--t20-text);
+  border-color: var(--t20-gold);
+}
+
+.table-t20 tbody tr:hover {
+  background-color: rgba(201, 162, 77, 0.1);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--t20-bg-dark);
+  border-top: 2px solid var(--t20-gold);
+  margin-top: auto;
+}
+
+/* Badges */
+.badge-t20 {
+  background-color: var(--t20-red);
+  color: var(--t20-text);
+}
+
+/* Alertas */
+.alert-t20 {
+  background-color: rgba(139, 30, 30, 0.2);
+  border: 1px solid var(--t20-red);
+  color: var(--t20-text);
+}
+
+/* Progress bars */
+.progress-t20 {
+  background-color: var(--t20-bg-dark);
+  border: 1px solid #444;
+}
+
+.progress-t20 .progress-bar {
+  background-color: var(--t20-red);
+}
+
+/* Modal */
+.modal-content-t20 {
+  background-color: var(--t20-bg-dark);
+  border: 2px solid var(--t20-gold);
+  color: var(--t20-text);
+}
+
+.modal-header-t20 {
+  border-bottom: 1px solid var(--t20-gold);
+}
+
+.modal-footer-t20 {
+  border-top: 1px solid var(--t20-gold);
+}
+
+/* Utilitários de cor */
+.text-t20-gold { color: var(--t20-gold); }
+.text-t20-red { color: var(--t20-red); }
+.bg-t20-dark { background-color: var(--t20-bg-dark); }
+.bg-t20-red { background-color: var(--t20-red); }
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Scroll personalizado */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--t20-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--t20-red);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--t20-gold);
+}
+
+/* Regras menores e utilitárias do antigo style.css */
 .app-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -16,6 +239,13 @@ footer.site-footer {
   text-align: center;
   font-size: 0.9rem;
 }
+
 .navbar .nav-link.active {
   font-weight: 600;
 }
+
+/* Pequeno fallback para quem usava padding-top:70px */
+@media (max-width: 576px) {
+  body { padding-top: 72px; }
+}
+
