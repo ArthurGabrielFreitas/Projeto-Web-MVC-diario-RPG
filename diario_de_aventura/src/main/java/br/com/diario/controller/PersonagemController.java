@@ -48,10 +48,10 @@ public class PersonagemController {
     }
 
     @GetMapping("/editar/{id}")
-    public String getMethodName(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("personagem", personagemService.buscar(id));
         carregarListas(model);
-        return "ameaca/form";
+        return "personagem/form";
     }
     
 
