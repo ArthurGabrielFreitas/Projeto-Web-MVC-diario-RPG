@@ -1,6 +1,7 @@
 package br.com.diario.model;
 
 import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class Sessao {
     private String titulo;
 
     @NotNull(message = "Data é obrigatória")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate data;
 
     @Positive(message = "Duração deve ser positiva")

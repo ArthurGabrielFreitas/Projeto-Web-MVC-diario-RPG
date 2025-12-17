@@ -32,6 +32,12 @@ public class SessaoController {
         return "sessao/form";
     }
 
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        model.addAttribute("sessao", sessaoService.buscarPorId(id));
+        return "sessao/form";
+    }
+
     @PostMapping("/salvar")
     public String salvar(@Valid Sessao sessao, BindingResult result) {
         if (result.hasErrors()) {
